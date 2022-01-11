@@ -1,0 +1,134 @@
+<div class="alert alert-warning mx-lg-5"
+*ngIf="variableSharingService.selectResult && variableSharingService.weatherDailyData.length === 0 && variableSharingService.noData">
+  <span style="font-weight: bold;">Sorry!</span> No records found.
+</div>
+<div class="alert alert-danger mx-lg-5"
+*ngIf="variableSharingService.selectResult && variableSharingService.weatherDailyData.length === 0 && variableSharingService.displayError">
+  An error occured please try again later
+</div>
+
+<div class="card mx-lg-5 border-0 mt-lg-5" 
+*ngIf="variableSharingService.selectResult && variableSharingService.weatherDailyData.length !== 0">
+<h2 style="text-align: center">Forecast at {{variableSharingService.locInfo.city}}, {{variableSharingService.locInfo.state}}</h2>
+  <div>
+    <button class="btn btn-light btn-sm mb-3 mr-lg-3" id='deets' (click)="variableSharingService.weatherchartFormed = false; variableSharingService.tempMinMaxFormed = false; appCompRouter.navigate(['/dateResults'])"
+    [disabled] = "checkEmptyDateData()"
+    style="background-color: transparent; padding: 5px 10px; float: right;">
+      <span style="vertical-align: middle;">Details</span>
+      <span class="material-icons" style="vertical-align: middle;">chevron_right</span>
+    </button>
+    
+    <button class="btn btn-light btn-sm mb-3 border border-secondary" *ngIf="!favService.isFavExists(variableSharingService.locInfo);"
+    style="background-color: transparent; padding: 5px 10px; float: right;"
+    (click) = "favService.insertFav(variableSharingService.locInfo);">
+      <span class="material-icons" style="vertical-align: middle;">star_border</span>
+    </button>
+    
+    <button class="btn btn-light btn-sm mb-3" *ngIf="favService.isFavExists(variableSharingService.locInfo)"
+    style="background-color: transparent; padding: 5px 10px; float: right;"
+    (click) = "favService.deleteFav(variableSharingService.locInfo);">
+      <span class="material-icons" style="vertical-align: middle; color: #f8d256;">star</span>
+    </button>
+  </div>
+    <div>
+      <ul class="nav nav-tabs card-header-tabs border-bottom mx-lg-4" id="navbar" role="tablist">
+        <li class="nav-item ml-auto">
+          <a class="nav-link active" data-toggle="tab" role="tab" href="#day-view">Day View</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" href="#temp-chart">Daily Temp. Chart</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" role="tab" href="#meteogram">Meteogram</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content" id="navbarContent">
+      <div class="tab-pane card-body active" id="day-view" role="tabpanel">
+        <table class="table table-hover">
+          <thead style="border-bottom: 3px solid gray;">
+            <th>#</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Temp. High (&deg; F)</th>
+            <th>Temp. Low (&deg; F)</th>
+            <th>Wind Speed (mph)</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let w of variableSharingService.weatherDailyData; let indexOfRow=index;">
+              <td>{{indexOfRow+1}}</td>
+              <td>
+                <a onmouseover="this.style.cursor='pointer'" [id]='indexOfRow' (click)="variableSharingService.weatherchartFormed = false; variableSharingService.tempMinMaxFormed = false; fetchDateDetails(indexOfRow)">
+                <u style="color:#007bff;">{{w.startTime | date: 'EEEE, dd MMM YYYY'}}</u>
+                </a>
+              </td>  
+              <td>
+                <img [src]="variableSharingService.getWeatherStatus(w.values.weatherCode).image" style="width: 35px; height: 35px;"/>
+                {{variableSharingService.getWeatherStatus(w.values.weatherCode).description}}
+              </td>
+              <td>{{w.values.temperatureMax}}</td>
+              <td>{{w.values.temperatureMin}}</td>
+              <td>{{w.values.windSpeed}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    
+      <div class="tab-pane card-body" id="temp-chart" role="tabpanel">
+        <figure>
+          <div id="tempminmax">
+            {{variableSharingService.ngTempMinMax(variableSharingService.weatherDailyData,'tempminmax')}}
+          </div>
+        </figure>
+      </div>
+
+      <div class="tab-pane card-body" id="meteogram" role="tabpanel">
+        <figure>
+          <div id="hourly">
+            {{variableSharingService.ngGetWeatherChart(this.variableSharingService.weatherHourlyData,'hourly')}}
+          </div>
+        </figure>
+      </div>
+    </div>
+
+</div>
+
+<div class="mx-lg-5" 
+*ngIf="!variableSharingService.selectResult && favService.favArray.length !== 0">
+<table class="table table-hover">
+  <thead style="border-bottom: 3px solid gray;">
+    <th>#</th>
+    <th>City</th>
+    <th>State</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let w of favService.getFavArray(); let indexOfRow=index;">
+      <td>{{indexOfRow+1}}</td>
+      <td>
+        <a onmouseover="this.style.cursor='pointer'" [id]='indexOfRow' (click)="variableSharingService.weatherchartFormed = false; variableSharingService.tempMinMaxFormed = false; fetchDailyDetails(w)">
+        <u style="color: #007bff;">{{w.city}}</u>
+        </a>
+      </td>
+      <td>
+        <a onmouseover="this.style.cursor='pointer'" [id]='indexOfRow' (click)="variableSharingService.weatherchartFormed = false; variableSharingService.tempMinMaxFormed = false; fetchDailyDetails(w)">
+        <u style="color: #007bff;">{{w.state}}</u>
+        </a>
+      </td>  
+      <td>
+        <button class="btn btn-light btn-sm mb-3" style="background-color: transparent; padding: 5px 10px;"
+        (click) = "favService.deleteFav(w);">
+        <img src="../../assets/Images/trash-fill.svg" style="height: 20px; width: 20px;">
+      </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="alert alert-warning mx-lg-5"
+*ngIf="!variableSharingService.selectResult && favService.favArray.length === 0">
+  <span style="font-weight: bold;">Sorry!</span> No records found.
+</div>

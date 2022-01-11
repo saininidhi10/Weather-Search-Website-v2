@@ -1,0 +1,129 @@
+<div class="mx-lg-5 mt-lg-4">
+  <button class="btn btn-light btn-sm mb-3" 
+  style="background-color: transparent; padding: 5px 10px; float: left;" (click)="appCompRouter.navigate(['/dailyResults'])">
+    <span class="material-icons" style="vertical-align: middle;">chevron_left</span>
+    <span style="vertical-align: middle;">List</span>
+  </button>
+  <!-- Date Heading -->
+  <a class="mx-3 btn btn-primary align-self-center" style="float: right; height: 40px; scale: 0.8; text-align: center; box-shadow: transparent;" target="_blank"
+  [href]="'https://twitter.com/intent/tweet?text=The%20temperature%20in%20'+variableSharingService.locInfo.city+',%20'+variableSharingService.locInfo.state+'%20on%20'+ variableSharingService.weatherDateData.dow +'%20is%20'+variableSharingService.weatherDateData.values.temperatureApparent+'%20&deg;F.%20The%20weather%20conditions%20are%20'+variableSharingService.getWeatherStatus(variableSharingService.weatherDateData.values.weatherCode).description+'%20&hashtags=CSCI571WeatherSearch'">
+  <img src="../../assets/Images/twitter.svg" style="height: 25px; width: 25px;">
+  </a>
+  <h3 style="text-align: center;font-weight: bold;">{{variableSharingService.weatherDateData.dow}}</h3>
+</div>
+<br>
+<div class="mx-lg-5">
+  <table class="table table-striped">
+    <thead></thead>
+    <tbody>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Status
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.getWeatherStatus(variableSharingService.weatherDateData.values.weatherCode).description}}
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Max Temperature
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.temperatureMax}} &deg; F
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Min Temperature
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.temperatureMin}} &deg; F
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Apparent Temperature
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.temperatureApparent}} &deg; F
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Sun Rise Time
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.sunriseTime | date: 'HH:mm:ss'}}
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Sun Set Time
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.sunsetTime | date: 'HH:mm:ss'}}
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Humidity
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.humidity}} %
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Wind Speed
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.windSpeed}} mph
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Visibility
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.visibility}} mi
+        </td>
+      </tr>
+      <tr> 
+        <td scope="row" style="width:40%" >
+          <span style="font-weight: bold;">
+          Cloud Cover
+          </span>
+        </td>
+        <td style="width: 60%;">
+          {{variableSharingService.weatherDateData.values.cloudCover}} %
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <agm-map [zoom]="16" [usePanning]="true" [latitude]="+variableSharingService.locInfo.latlon.split(',')[0]"
+  [longitude]="+variableSharingService.locInfo.latlon.split(',')[1]" style="height: 400px; width: 100%; margin: 5px 10px 10px 30px;">
+  <agm-marker [latitude]="+variableSharingService.locInfo.latlon.split(',')[0]"
+  [longitude]="+variableSharingService.locInfo.latlon.split(',')[1]">
+
+  </agm-marker>
+  </agm-map>
+</div>
